@@ -1,91 +1,86 @@
 import { useEffect, useState } from "react";
+import { SCENARIOS } from "../scenarios/scenarios";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
 import Timer from "../components/ui/Timer";
 import { useDecisionStore } from "../store/decisionStore";
 import { evaluateDecision } from "../scoring/evaluateDecision";
 
-const SCENARIO = {
-  id: 1,
-  title: "Budget Allocation",
-  description:
-    "You have ₹10,00,000 to allocate across departments. You must allocate all funds. Time is limited.",
-  timeLimit: 90,
-  options: [
-    { id: "rnd", label: "R&D", risk: 3 },
-    { id: "marketing", label: "Marketing", risk: 2 },
-    { id: "operations", label: "Operations", risk: 1 },
-    { id: "sales", label: "Sales", risk: 2 },
-    { id: "support", label: "Support", risk: 1 },
-  ],
-};
-
 export default function Scenario({ onComplete }) {
   const {
+    scenarioIndex,
     selectedOptions,
     locked,
     startTime,
+    startScenario,
     setSelected,
     lockDecision,
-    setStartTime,
   } = useDecisionStore();
 
-  const [timeLeft, setTimeLeft] = useState(SCENARIO.timeLimit);
+  const scenario = SCENARIOS[scenarioIndex];
 
-  // Start timer once
+  // ✅ Initialized ONCE per mount (no reset effect)
+  const [timeLeft, setTimeLeft] = useState(scenario.timeLimit);
+
+  // ✅ Start scenario once per mount
   useEffect(() => {
-    if (!startTime) {
-      setStartTime(Date.now());
-    }
-  }, [startTime, setStartTime]);
+    startScenario();
+  }, [startScenario]);
 
-  // Countdown logic
+  // ⏱ Countdown timer
   useEffect(() => {
-    if (locked) return;
-
-    if (timeLeft <= 0) {
-      lockDecision();
-
-      const result = evaluateDecision({
-        selectedOptions,
-        scenario: SCENARIO,
-        startTime,
-        endTime: Date.now(),
-      });
-
-      onComplete(result);
-      return;
-    }
+    if (locked || timeLeft <= 0) return;
 
     const interval = setInterval(() => {
       setTimeLeft((t) => t - 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft, locked, lockDecision, onComplete, selectedOptions, startTime]);
+  }, [timeLeft, locked]);
 
-  const toggleOption = (id) => {
-    if (locked) return;
-    setSelected(id);
-  };
+  // ⛔ Auto-submit on timeout
+  useEffect(() => {
+    if (!locked && timeLeft === 0) {
+      lockDecision();
+
+      const result = evaluateDecision({
+        selectedOptions,
+        scenario,
+        startTime,
+        endTime: Date.now(),
+      });
+
+      onComplete(result, scenarioIndex + 1 >= SCENARIOS.length);
+    }
+  }, [
+    timeLeft,
+    locked,
+    lockDecision,
+    selectedOptions,
+    scenario,
+    startTime,
+    onComplete,
+    scenarioIndex,
+  ]);
 
   const canSubmit = selectedOptions.length > 0 && !locked;
 
   return (
     <div className="min-h-screen px-6 py-10 max-w-4xl mx-auto space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">{SCENARIO.title}</h2>
+        <h2 className="text-xl font-semibold">{scenario.title}</h2>
         <Timer value={timeLeft} />
       </div>
 
-      <p className="text-muted">{SCENARIO.description}</p>
+      <p className="text-muted">{scenario.description}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {SCENARIO.options.map((opt) => (
+        {scenario.options.map((opt) => (
           <Card key={opt.id} selected={selectedOptions.includes(opt.id)}>
             <button
               className="w-full text-left"
-              onClick={() => toggleOption(opt.id)}
+              onClick={() => setSelected(opt.id)}
+              disabled={locked}
             >
               {opt.label}
             </button>
@@ -101,12 +96,12 @@ export default function Scenario({ onComplete }) {
 
           const result = evaluateDecision({
             selectedOptions,
-            scenario: SCENARIO,
+            scenario,
             startTime,
             endTime: Date.now(),
           });
 
-          onComplete(result);
+          onComplete(result, scenarioIndex + 1 >= SCENARIOS.length);
         }}
       />
     </div>

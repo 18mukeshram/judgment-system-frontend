@@ -1,31 +1,32 @@
 export default function Judgment({ result }) {
-  if (!result) return null;
+  if (!result || result.length === 0) return null;
 
-  const { timeResponse, riskProfile, timeTaken } = result;
+  const riskHeavy = result.filter((r) => r.riskProfile === "risk-heavy").length;
+  const riskAverse = result.filter(
+    (r) => r.riskProfile === "risk-averse"
+  ).length;
+  const fast = result.filter((r) => r.timeResponse === "fast").length;
+  const late = result.filter((r) => r.timeResponse === "late").length;
 
-  let title = "Constraint Optimizer";
+  let title = "Balanced Operator";
   let description = [];
 
-  if (riskProfile === "risk-heavy") {
+  if (riskHeavy > riskAverse) {
     title = "Risk Carrier";
-    description.push("You accept instability to preserve momentum.");
+    description.push("You consistently accept instability for momentum.");
   }
 
-  if (riskProfile === "risk-averse") {
+  if (riskAverse > riskHeavy) {
     title = "Risk Minimizer";
-    description.push("You trade growth for predictability.");
+    description.push("You prioritize predictability over upside.");
   }
 
-  if (timeResponse === "fast") {
-    description.push("You close decisions early, before full certainty.");
+  if (fast > late) {
+    description.push("You close decisions early under pressure.");
   }
 
-  if (timeResponse === "late") {
-    description.push("You delay commitment under pressure.");
-  }
-
-  if (description.length === 0) {
-    description.push("You maintain balance under constraint.");
+  if (late > fast) {
+    description.push("You delay commitment when constrained.");
   }
 
   return (
@@ -38,8 +39,6 @@ export default function Judgment({ result }) {
             {line}
           </p>
         ))}
-
-        <p className="text-xs text-muted">Time taken: {timeTaken}s</p>
       </div>
     </div>
   );

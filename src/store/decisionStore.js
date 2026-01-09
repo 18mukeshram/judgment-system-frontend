@@ -1,11 +1,20 @@
 import { create } from "zustand";
 
 export const useDecisionStore = create((set) => ({
-  currentScenarioId: 1,
+  scenarioIndex: 0,
+  decisions: [],
   selectedOptions: [],
   locked: false,
   startTime: null,
   endTime: null,
+
+  startScenario: () =>
+    set({
+      selectedOptions: [],
+      locked: false,
+      startTime: Date.now(),
+      endTime: null,
+    }),
 
   setSelected: (id) =>
     set((state) => {
@@ -20,11 +29,18 @@ export const useDecisionStore = create((set) => ({
       };
     }),
 
-  setStartTime: (time) => set({ startTime: time }),
-
   lockDecision: () =>
-    set(() => ({
+    set((state) => ({
       locked: true,
       endTime: Date.now(),
+      decisions: [
+        ...state.decisions,
+        {
+          selectedOptions: state.selectedOptions,
+          startTime: state.startTime,
+          endTime: Date.now(),
+        },
+      ],
+      scenarioIndex: state.scenarioIndex + 1,
     })),
 }));

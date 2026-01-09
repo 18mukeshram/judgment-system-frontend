@@ -5,6 +5,7 @@ export const useDecisionStore = create((set) => ({
   selectedOptions: [],
   locked: false,
   startTime: null,
+  endTime: null,
 
   setSelected: (id) =>
     set((state) => {
@@ -21,5 +22,9 @@ export const useDecisionStore = create((set) => ({
 
   setStartTime: (time) => set({ startTime: time }),
 
-  lockDecision: () => set({ locked: true }),
+  lockDecision: () =>
+    set(() => ({
+      locked: true,
+      endTime: Date.now(),
+    })),
 }));

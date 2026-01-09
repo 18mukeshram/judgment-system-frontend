@@ -3,6 +3,7 @@ import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
 import Timer from "../components/ui/Timer";
 import { useDecisionStore } from "../store/decisionStore";
+import { evaluateDecision } from "../scoring/evaluateDecision";
 
 const SCENARIO = {
   id: 1,
@@ -44,7 +45,15 @@ export default function Scenario({ onComplete }) {
 
     if (timeLeft <= 0) {
       lockDecision();
-      onComplete();
+
+      const result = evaluateDecision({
+        selectedOptions,
+        scenario: SCENARIO,
+        startTime,
+        endTime: Date.now(),
+      });
+
+      onComplete(result);
       return;
     }
 
@@ -53,7 +62,7 @@ export default function Scenario({ onComplete }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft, locked, lockDecision, onComplete]);
+  }, [timeLeft, locked, lockDecision, onComplete, selectedOptions, startTime]);
 
   const toggleOption = (id) => {
     if (locked) return;
@@ -89,7 +98,15 @@ export default function Scenario({ onComplete }) {
         disabled={!canSubmit}
         onClick={() => {
           lockDecision();
-          onComplete();
+
+          const result = evaluateDecision({
+            selectedOptions,
+            scenario: SCENARIO,
+            startTime,
+            endTime: Date.now(),
+          });
+
+          onComplete(result);
         }}
       />
     </div>

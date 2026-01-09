@@ -1,6 +1,6 @@
 import Button from "../components/ui/Button";
 
-export default function Landing() {
+export default function Landing({ onStart }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-6">
       <div className="max-w-xl text-center space-y-8">
@@ -12,7 +12,7 @@ export default function Landing() {
           There are no correct answers. Only consequences.
         </p>
 
-        <Button label="Start" />
+        <Button label="Start" onClick={onStart} />
       </div>
     </div>
   );

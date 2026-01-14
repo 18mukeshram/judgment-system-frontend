@@ -1,7 +1,18 @@
 import { useEffect } from "react";
 
 export default function Judgment({ result }) {
-  // ✅ Hooks must come first (no early return before this)
+  // ✅ Hooks must come first
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+
+    const handler = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, []);
+
   let title = "Balanced Operator";
   let description = [];
 

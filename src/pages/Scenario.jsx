@@ -22,6 +22,16 @@ export default function Scenario({ onComplete }) {
   // ✅ Initialized ONCE per mount (no reset effect)
   const [timeLeft, setTimeLeft] = useState(scenario.timeLimit);
 
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
+
   // ✅ Start scenario once per mount
   useEffect(() => {
     startScenario();

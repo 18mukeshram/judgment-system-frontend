@@ -1,15 +1,16 @@
+import { useEffect } from "react";
+
 export default function Judgment({ result }) {
-  if (!result || result.length === 0) return null;
-
-  const riskHeavy = result.filter((r) => r.riskProfile === "risk-heavy").length;
-  const riskAverse = result.filter(
-    (r) => r.riskProfile === "risk-averse"
-  ).length;
-  const fast = result.filter((r) => r.timeResponse === "fast").length;
-  const late = result.filter((r) => r.timeResponse === "late").length;
-
+  // ✅ Hooks must come first (no early return before this)
   let title = "Balanced Operator";
   let description = [];
+
+  const riskHeavy =
+    result?.filter((r) => r.riskProfile === "risk-heavy").length || 0;
+  const riskAverse =
+    result?.filter((r) => r.riskProfile === "risk-averse").length || 0;
+  const fast = result?.filter((r) => r.timeResponse === "fast").length || 0;
+  const late = result?.filter((r) => r.timeResponse === "late").length || 0;
 
   if (riskHeavy > riskAverse) {
     title = "Risk Carrier";
@@ -28,6 +29,22 @@ export default function Judgment({ result }) {
   if (late > fast) {
     description.push("You delay commitment when constrained.");
   }
+
+  useEffect(() => {
+    if (!result || result.length === 0) return;
+
+    fetch("http://localhost:5000/api/judgment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        profile: title,
+        signals: result,
+      }),
+    }).catch(() => {});
+  }, [result, title]);
+
+  // ✅ Early return AFTER hooks
+  if (!result || result.length === 0) return null;
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6">

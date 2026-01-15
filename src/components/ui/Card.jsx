@@ -2,9 +2,12 @@ export default function Card({ children, selected }) {
   return (
     <div
       className={`
-        border p-4
-        ${selected ? "border-accent" : "border-fg/20"}
-        transition
+        p-4
+        bg-surfaceAlt
+        border
+        ${selected ? "border-signal" : "border-border"}
+        hover:border-fg/40
+        transition-colors
       `}
     >
       {children}

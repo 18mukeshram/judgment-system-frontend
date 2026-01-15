@@ -59,11 +59,13 @@ export default function Judgment({ result }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="max-w-xl space-y-6 text-center">
-        <h2 className="text-2xl font-semibold">Decision Profile: {title}</h2>
+      <div className="w-full max-w-xl bg-surface border border-border p-10 space-y-6">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Decision Profile: {title}
+        </h2>
 
         {description.map((line, idx) => (
-          <p key={idx} className="text-sm text-muted">
+          <p key={idx} className="text-sm text-muted leading-relaxed">
             {line}
           </p>
         ))}

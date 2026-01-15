@@ -1,3 +1,14 @@
 export default function Timer({ value }) {
-  return <div className="font-mono text-sm text-muted">{value}s remaining</div>;
+  const critical = value <= 10;
+
+  return (
+    <div
+      className={`
+        font-mono text-xs tracking-widest
+        ${critical ? "text-signal" : "text-muted"}
+      `}
+    >
+      T–{value}s
+    </div>
+  );
 }

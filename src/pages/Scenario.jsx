@@ -76,44 +76,50 @@ export default function Scenario({ onComplete }) {
   const canSubmit = selectedOptions.length > 0 && !locked;
 
   return (
-    <div className="min-h-screen px-6 py-10 max-w-4xl mx-auto space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">{scenario.title}</h2>
-        <Timer value={timeLeft} />
+    <div className="min-h-screen flex items-center justify-center px-6">
+      <div className="w-full max-w-5xl bg-surface border border-border p-8 space-y-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold tracking-tight">
+            {scenario.title}
+          </h2>
+          <Timer value={timeLeft} />
+        </div>
+
+        <p className="text-sm text-muted leading-relaxed max-w-3xl">
+          {scenario.description}
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {scenario.options.map((opt) => (
+            <Card key={opt.id} selected={selectedOptions.includes(opt.id)}>
+              <button
+                className="w-full text-left"
+                onClick={() => setSelected(opt.id)}
+                disabled={locked}
+              >
+                {opt.label}
+              </button>
+            </Card>
+          ))}
+        </div>
+
+        <Button
+          label="Submit Decision"
+          disabled={!canSubmit}
+          onClick={() => {
+            lockDecision();
+
+            const result = evaluateDecision({
+              selectedOptions,
+              scenario,
+              startTime,
+              endTime: Date.now(),
+            });
+
+            onComplete(result, scenarioIndex + 1 >= SCENARIOS.length);
+          }}
+        />
       </div>
-
-      <p className="text-muted">{scenario.description}</p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {scenario.options.map((opt) => (
-          <Card key={opt.id} selected={selectedOptions.includes(opt.id)}>
-            <button
-              className="w-full text-left"
-              onClick={() => setSelected(opt.id)}
-              disabled={locked}
-            >
-              {opt.label}
-            </button>
-          </Card>
-        ))}
-      </div>
-
-      <Button
-        label="Submit Decision"
-        disabled={!canSubmit}
-        onClick={() => {
-          lockDecision();
-
-          const result = evaluateDecision({
-            selectedOptions,
-            scenario,
-            startTime,
-            endTime: Date.now(),
-          });
-
-          onComplete(result, scenarioIndex + 1 >= SCENARIOS.length);
-        }}
-      />
     </div>
   );
 }

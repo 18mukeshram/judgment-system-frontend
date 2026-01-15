@@ -1,13 +1,125 @@
 @import "tailwindcss";
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+/* ═══════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════ */
+
 html,
 body,
 #root {
   height: 100%;
-  background-color: #0b0d10;
-  color: #ededed;
+  background-color: #0a0c10;
+  color: #e6e8eb;
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.2);
+  color: #22d3ee;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0c10;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #242936;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #343b4a;
+}
+
+/* ═══════════════════════════════════════════
+   SYSTEM TYPOGRAPHY
+   ═══════════════════════════════════════════ */
+
+.text-system {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #9aa3b2;
+}
+
+.text-system-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   DIVIDERS & MARKERS
+   ═══════════════════════════════════════════ */
+
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #242936 20%,
+    #242936 80%,
+    transparent 100%
+  );
+}
+
+.divider-vertical {
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    #242936 20%,
+    #242936 80%,
+    transparent 100%
+  );
+}
+
+/* ═══════════════════════════════════════════
+   FOCUS STATES
+   ═══════════════════════════════════════════ */
+
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 1px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   SCANLINE EFFECT (optional overlay)
+   ═══════════════════════════════════════════ */
+
+.scanlines::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.015) 2px,
+    rgba(0, 0, 0, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
 }

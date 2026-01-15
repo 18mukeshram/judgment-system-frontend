@@ -82,7 +82,7 @@ export default function Scenario({ onComplete }) {
           <h2 className="text-lg font-semibold tracking-tight">
             {scenario.title}
           </h2>
-          <Timer value={timeLeft} />
+          <Timer value={timeLeft} total={scenario.timeLimit} />
         </div>
 
         <p className="text-sm text-muted leading-relaxed max-w-3xl">

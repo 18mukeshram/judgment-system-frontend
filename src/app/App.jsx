@@ -3,6 +3,7 @@ import Landing from "../pages/Landing";
 import Scenario from "../pages/Scenario";
 import Judgment from "../pages/Judgment";
 import { useDecisionStore } from "../store/decisionStore";
+import Background from "../components/ui/Background";
 
 export default function App() {
   const [page, setPage] = useState("landing");
@@ -13,6 +14,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-bg text-fg font-sans">
+      <Background />
       {/* Landing (unlocked) */}
       {page === "landing" && !lockedOut && (
         <Landing onStart={() => setPage("scenario")} />
